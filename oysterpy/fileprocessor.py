@@ -252,7 +252,6 @@ def makeMetadataChunk(filenameList, passwordFlagArray, genesisHash):
 	chunkSize = 1013 #in bytes
 	#sectorSize = 1000000 #number of chunks
 	lastIndexUsed = 1 #First attempt is made supposing there's only one metadata chunk. So first index (0) goes to the treasure, second (1) to the metadata. If there's more than one metadata chunk then another function will trigger and fix it later.
-	lastOffsetHash = genesisHash
 
 	for filename, passwordFlag in zip(filenameList, passwordFlagArray):
 		filesize = os.path.getsize(filename)
@@ -269,12 +268,11 @@ def makeMetadataChunk(filenameList, passwordFlagArray, genesisHash):
 				lastChunkSize += - chunkSize
 				chunkCount += 1
 
-		offsetHash = datamap.get_offset_hash(lastOffsetHash, startIdx)
+		offsetHash = datamap.get_offset_hash(genesisHash, startIdx)
 
 		fullMetadata[filename]={"chunkSize": chunkSize, "startIdx": startIdx, "chunkCount": chunkCount, "offsetHash": offsetHash.hex(), "password": passwordFlag, "lastChunkSize": lastChunkSize}
 
 		lastIndexUsed = startIdx + chunkCount - 1 #TODO needs to account for additional treasures in other sectors.
-		lastOffsetHash = offsetHash
 
 	return fullMetadata
 
