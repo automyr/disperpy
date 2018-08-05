@@ -41,7 +41,7 @@ def getKeypair(privatehandle):
 		bytes -- Verifying key in bytes.
 	"""
 
-	seed = SHA3_256.new(privatehandle).digest()
+	seed = SHA256.new(privatehandle).digest()
 
 	signing_key = nacl.signing.SigningKey(seed)
 	verifying_key = signing_key.verify_key
