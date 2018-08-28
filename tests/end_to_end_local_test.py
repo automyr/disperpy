@@ -1,6 +1,6 @@
 import pytest
 import os
-from oysterpy import encryption, fileprocessor
+from oysterpy import encryption, fileprocessor, datamap
 from Crypto.Random import get_random_bytes, random
 from Crypto.Hash import SHA256
 import numpy as np
@@ -44,10 +44,11 @@ def test_End_to_End():
 	allChunksList = [b"TreasureChunkHere"] + fileprocessor.prepareMetadataChunks(metadataChunkTuple, privateHandle)
 
 	for filename in filenameList:
+		offsetHash = bytes.fromhex(rawMetadataChunk[filename]["offsetHash"])
 		if filename in passwordDict: # This statement is only True if filename has been added to the keys in the dict, which means it has a password
-			fileChunks = fileprocessor.fileToChunks(filename, privateHandle, password=passwordDict[filename])
+			fileChunks = fileprocessor.fileToChunks(filename, privateHandle, offsetHash, password=passwordDict[filename])
 		else:
-			fileChunks = fileprocessor.fileToChunks(filename, privateHandle)
+			fileChunks = fileprocessor.fileToChunks(filename, privateHandle, offsetHash)
 		allChunksList += fileChunks
 
 	firstMetadataChunk = allChunksList[1]
@@ -75,10 +76,11 @@ def test_End_to_End():
 
 		assert SHA256.new(read_binary_file(filename)).digest() == SHA256.new(read_binary_file(decrypted_filename)).digest()
 	
-
+	address_gen = datamap.createDatamapGenerator(verifyingKey, None, 1)
 	for chunk in allChunksList[1:]: #first chunk is the treasure chunk and doesn't get signed when doing local simulations
 		data_chunk, signature = encryption.splitChunkAndSignature(chunk)
-		encryption.verifyChunk(data_chunk, signature, verifyingKey.hex())
+		address = encryption.trytesToBytes(next(address_gen)[:-1])
+		encryption.verifyChunk(data_chunk + address, signature, verifyingKey.hex())
 	assert True
 
 	cleanup()

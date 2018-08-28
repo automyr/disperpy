@@ -25,15 +25,18 @@ class TestChunkingFunctionsWithoutPassword(object):
 	_path = "testfile_4"
 	initialize_file(_path)
 	privateHandle = encryption.getPrivateHandle()
+	_, genesisHash = encryption.getKeypair(privateHandle)
 
 	raw_file = read_binary_file(_path)
-	chunkList = fileprocessor.fileToChunks(_path, privateHandle)
+	chunkList = fileprocessor.fileToChunks(_path, privateHandle, genesisHash)
 
 	def test_verify_chunk_signatures(self):
 		_, verifyingKey = encryption.getKeypair(self.privateHandle)
+		address_gen = datamap.createDatamapGenerator(verifyingKey, len(self.chunkList) + 1)
 		for chunk in self.chunkList: 
 			datachunk, signature = encryption.splitChunkAndSignature(chunk)
-			encryption.verifyChunk(datachunk, signature, verifyingKey.hex())
+			address = encryption.trytesToBytes(next(address_gen)[:-1])
+			encryption.verifyChunk(datachunk + address, signature, verifyingKey.hex())
 		assert True
 	
 	def test_decrypting_chunked_file(self):
@@ -54,15 +57,18 @@ class TestChunkingFunctionsWithPassword(object):
 	pwd = "oysterpy"
 	initialize_file(_path)
 	privateHandle = encryption.getPrivateHandle()
+	_, genesisHash = encryption.getKeypair(privateHandle)
 
 	raw_file = read_binary_file(_path)
-	chunkList = fileprocessor.fileToChunks(_path, privateHandle, password=pwd)
+	chunkList = fileprocessor.fileToChunks(_path, privateHandle, genesisHash, password=pwd)
 
 	def test_verify_chunk_signatures(self):
 		_, verifyingKey = encryption.getKeypair(self.privateHandle)
+		address_gen = datamap.createDatamapGenerator(verifyingKey, len(self.chunkList) + 1)
 		for chunk in self.chunkList: 
 			datachunk, signature = encryption.splitChunkAndSignature(chunk)
-			encryption.verifyChunk(datachunk, signature, verifyingKey.hex())
+			address = encryption.trytesToBytes(next(address_gen)[:-1])
+			encryption.verifyChunk(datachunk + address, signature, verifyingKey.hex())
 		assert True
 	
 	def test_decrypting_chunked_file(self):

@@ -5,12 +5,13 @@ from oysterpy import encryption, datamap
 import json
 import numpy as np
 
-def fileToChunks(filename, privateHandle, password = None):
+def fileToChunks(filename, privateHandle, startingHash, password = None):
 	"""Takes a filename and returns the file converted to rev2 compliant chunks, already signed.
 	
 	Arguments:
 		filename {str} -- Self-explanatory. Also needs to include the extension.
 		privateHandle {bytes} -- Bytestring to use as the private handle. Can and should be generated using encryption.getPrivateHandle().
+		startingHash {bytes} -- Hash on the main hashchain corresponding to the position of the first chunk of the file on the datamap.
 	
 	Keyword Arguments:
 		password {str} -- Optional argument. Use it to password protect a particular file in a multi-file upload (default: {None})
@@ -34,10 +35,13 @@ def fileToChunks(filename, privateHandle, password = None):
 		numberOfChunks = math.ceil((filesize - 997)/chunksize) + 1
 		chunksize = 997
 
-	
+	address_gen = datamap.createDatamapGenerator(startingHash, numberOfChunks + 1)
+
 	for i in range(0, numberOfChunks):
 		chunk = f.read(chunksize)
 		encrypted_chunk, nonce, tag = encryption.encryptAES(chunk, encryptionKey)
+		address_trytes = next(address_gen)[:-1] #the real address is 81 chars, but the byte conversion only works with even numbers, so we use the first 80 chars of the address to sign and check 
+		address_bytes = encryption.trytesToBytes(address_trytes)
 		
 		if password is not None and i == 0:
 			unsigned_chunk = b"".join([encrypted_chunk, nonce, tag])
@@ -45,7 +49,7 @@ def fileToChunks(filename, privateHandle, password = None):
 		else:
 			unsigned_chunk = b"".join([encrypted_chunk, nonce])
 			
-		signature = encryption.signChunk(unsigned_chunk, signingKey)
+		signature = encryption.signChunk(unsigned_chunk + address_bytes, signingKey)
 		completed_chunk = unsigned_chunk + signature
 		fileList.append(completed_chunk)
 	
@@ -311,15 +315,19 @@ def prepareMetadataChunks(metadataTuple, privateHandle):
 	"""
 
 	encryptionKey = encryption.getEncryptionKey(privateHandle)
-	signingKey, _ = encryption.getKeypair(privateHandle)
+	signingKey, verifyingKey = encryption.getKeypair(privateHandle)
 	metadataChunkList = []
+
+	address_gen = datamap.createDatamapGenerator(verifyingKey, len(metadataTuple) + 2)
+	next(address_gen) # first address is the treasure chunk's so we don't need it right now
 
 	for i, metadataChunk in enumerate(metadataTuple):
 		encryptedChunk, nonce, _ = encryption.encryptAES(metadataChunk, encryptionKey)
 		preparedChunk = encryptedChunk+nonce
+		address = encryption.trytesToBytes(next(address_gen)[:-1])
 		if i == 0:
 			preparedChunk = addMetadataFlags(preparedChunk, len(metadataTuple))
-		signature = encryption.signChunk(preparedChunk, signingKey)
+		signature = encryption.signChunk(preparedChunk + address, signingKey)
 		finalMetadataChunk = b"".join([preparedChunk, signature])
 		metadataChunkList.append(finalMetadataChunk)
 
