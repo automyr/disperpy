@@ -30,22 +30,35 @@ def get_offset_hash(startingHash, n):
 		nextHash = hashlib.sha256(nextHash).digest()
 	return nextHash
 
-def createDatamapGenerator(startingHash, n):
+def createDatamapGenerator(startingHash, n, offset=None):
 	"""Creates a generator that yields the iota addresses for each iteration, starting with `startingHash` up to `n` iterations.
 	
 	Arguments:
 		startingHash {bytes} -- Self-explanatory.
-		n {int} -- Max number of iterations.
+		n {int} -- Max number of iterations. If None, there's no max number of itera
+
+	Keyword Arguments:
+		offset {int} -- Number of hashes to skip before returning the generator. Ex: startingHash is the genHash, but you want the first address in the generator to be the 3rd in the datamap, so the offset must be 2.
 
 	Yields:
 		iota.types.TryteString -- Iota address corresponding to the current hash.
 	"""
 	nextHash = startingHash
-	for _ in range(n):
-		obfuscatedhash = hashlib.sha384(nextHash).digest()
-		address = TryteString.from_bytes(obfuscatedhash)[0:81]
-		nextHash = hashlib.sha256(nextHash).digest()
-		yield address
+	if offset is not None:
+		for _ in range(offset):
+			nextHash = hashlib.sha256(nextHash).digest()
+	if n is None:
+		while True:
+			obfuscatedhash = hashlib.sha384(nextHash).digest()
+			address = TryteString.from_bytes(obfuscatedhash)[0:81]
+			nextHash = hashlib.sha256(nextHash).digest()
+			yield address
+	else:
+		for _ in range(n):
+			obfuscatedhash = hashlib.sha384(nextHash).digest()
+			address = TryteString.from_bytes(obfuscatedhash)[0:81]
+			nextHash = hashlib.sha256(nextHash).digest()
+			yield address
 
 def get_address_batch(startingHash, n):
 	"""Returns a list with `n`addresses where the first one corresponds to the `startingHash`
