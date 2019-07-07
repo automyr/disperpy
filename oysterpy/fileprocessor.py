@@ -139,33 +139,33 @@ def splitBytestring(bytestring, sliceSize):
 
 	return tuple(byteList)
 
-def addRevFlag(firstTreasureChunk):
+def addRevFlag(protocolChunk):
 	"""Adds the revision flag to the first chunk in the datamap.
 	
 	Arguments:
-		firstTreasureChunk {bytes} -- This should already be encrypted and have the nonce. This should come directly from the broker and only lack the flag and signature.
+		protocolChunk {bytes} -- Used to store protocol data. As of now only contains the revision flag.
 	
 	Returns:
 		bytes -- Treasure chunk ready to be signed.
 	"""
-	#pylint: disable=E1101
+	#pylint: disable=E1111
 	revFlag = np.uint32(2).tobytes()
-	return b"".join([revFlag, firstTreasureChunk])
+	return b"".join([revFlag, protocolChunk])
 
-def stripRevFlag(firstTreasureChunk):
+def stripRevFlag(protocolChunk):
 	"""Strips the revision flag from the first chunk in the datamap.
 	
 	Arguments:
-		firstTreasureChunk {bytes} -- Self-explanatory. In this particular case this refers to the chunk straight from the iota tx.
+		protocolChunk {bytes} -- Self-explanatory. In this particular case this refers to the chunk straight from the iota tx.
 	
 	Returns:
 		int -- Revision flag number. Could be either 1 or 2 as of this writing.
-		bytes -- The rest of the treasure chunk.
+		bytes -- The rest of the protocol chunk.
 	"""
-	revFlag = int(np.fromstring(firstTreasureChunk[:4], dtype="uint32"))
-	treasureChunk = firstTreasureChunk[4:]
+	revFlag = int(np.fromstring(protocolChunk[:4], dtype="uint32"))
+	rawProtocolChunk = protocolChunk[4:]
 
-	return revFlag, treasureChunk
+	return revFlag, rawProtocolChunk
 
 def addMetadataFlags(metadataChunk, numberOfMetadataChunks):
 	"""Adds binary flag the number of metadata chunks this upload has (uint8).
@@ -177,6 +177,7 @@ def addMetadataFlags(metadataChunk, numberOfMetadataChunks):
 	Returns:
 		bytes -- Metadata chunk ready to be signed.
 	"""
+	#pylint: disable=E1111
 	numberFlag = np.uint8(numberOfMetadataChunks).tobytes()
 	fullMetadataChunk = b"".join([numberFlag, metadataChunk])
 
@@ -255,7 +256,7 @@ def makeMetadataChunk(filenameList, passwordFlagArray, genesisHash):
 	fullMetadata = {} 
 	chunkSize = 1013 #in bytes
 	#sectorSize = 1000000 #number of chunks
-	lastIndexUsed = 1 #First attempt is made supposing there's only one metadata chunk. So first index (0) goes to the treasure, second (1) to the metadata. If there's more than one metadata chunk then another function will trigger and fix it later.
+	lastIndexUsed = 1 #First attempt is made supposing there's only one metadata chunk. So first index (0) goes to the protocol chunk, second (1) to the metadata. If there's more than one metadata chunk then another function will trigger and fix it later.
 
 	for filename, passwordFlag in zip(filenameList, passwordFlagArray):
 		filesize = os.path.getsize(filename)
@@ -276,7 +277,7 @@ def makeMetadataChunk(filenameList, passwordFlagArray, genesisHash):
 
 		fullMetadata[filename]={"chunkSize": chunkSize, "startIdx": startIdx, "chunkCount": chunkCount, "offsetHash": offsetHash.hex(), "password": passwordFlag, "lastChunkSize": lastChunkSize}
 
-		lastIndexUsed = startIdx + chunkCount - 1 #TODO needs to account for additional treasures in other sectors.
+		lastIndexUsed = startIdx + chunkCount - 1
 
 	return fullMetadata
 
