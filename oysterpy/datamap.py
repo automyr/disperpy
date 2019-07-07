@@ -75,29 +75,3 @@ def get_address_batch(startingHash, n):
 	addressList = [address for address in gen]
 
 	return addressList
-
-def exclude_treasure_addresses_from_list(addressList, startingHash_abs_index, sectorSize=1000000):
-	"""Returns a list without the addresses corresponding to treasures, to make downloading files easier.
-	
-	Arguments:
-		addressList {list} -- Output of get_address_batch(). List of trytestrings representing IOTA addresses.
-		startingHash_abs_index {int} -- Absolute index of the startingHash of the batch in the entire datamap. Ex: the abs_index of the genesis hash is 0.
-	
-	Keyword Arguments:
-		sectorSize {int} -- Self-explanatory. This is more for testing than anything else, since sector size is fixed in rev2 (default: {1000000})
-	
-	Returns:
-		list -- addressList without the addresses corresponding to treasures.
-	"""
-	#! Doesn't really work like you'd expect it to. Needs some extra work and testing.
-	# TODO: Solve this.
-	
-	to_exclude = set()
-	for i in range(startingHash_abs_index, startingHash_abs_index+len(addressList)-1):
-		if i % sectorSize == 0:
-			relative_idx = i - startingHash_abs_index
-			to_exclude.add(relative_idx)
-
-	correctedAddressList = [address for i, address in enumerate(addressList) if i not in to_exclude]
-
-	return correctedAddressList

@@ -148,7 +148,7 @@ def addRevFlag(firstTreasureChunk):
 	Returns:
 		bytes -- Treasure chunk ready to be signed.
 	"""
-	# pylint: disable=E1101
+	#pylint: disable=E1101
 	revFlag = np.uint32(2).tobytes()
 	return b"".join([revFlag, firstTreasureChunk])
 
