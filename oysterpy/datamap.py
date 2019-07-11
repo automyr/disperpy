@@ -30,12 +30,12 @@ def get_offset_hash(startingHash, n):
 		nextHash = hashlib.sha256(nextHash).digest()
 	return nextHash
 
-def createDatamapGenerator(startingHash, n, offset=None):
+def createDatamapGenerator(startingHash, n=None, offset=None):
 	"""Creates a generator that yields the iota addresses for each iteration, starting with `startingHash` up to `n` iterations.
 	
 	Arguments:
 		startingHash {bytes} -- Self-explanatory.
-		n {int} -- Max number of iterations. If None, there's no max number of itera
+		n {int} -- Max number of iterations. If None, there's no max number of iterations.
 
 	Keyword Arguments:
 		offset {int} -- Number of hashes to skip before returning the generator. Ex: startingHash is the genHash, but you want the first address in the generator to be the 3rd in the datamap, so the offset must be 2.

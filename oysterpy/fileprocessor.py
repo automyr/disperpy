@@ -255,7 +255,6 @@ def makeMetadataChunk(filenameList, passwordFlagArray, genesisHash):
 
 	fullMetadata = {} 
 	chunkSize = 1013 #in bytes
-	#sectorSize = 1000000 #number of chunks
 	lastIndexUsed = 1 #First attempt is made supposing there's only one metadata chunk. So first index (0) goes to the protocol chunk, second (1) to the metadata. If there's more than one metadata chunk then another function will trigger and fix it later.
 
 	for filename, passwordFlag in zip(filenameList, passwordFlagArray):

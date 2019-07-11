@@ -77,7 +77,7 @@ def test_End_to_End():
 		assert SHA256.new(read_binary_file(filename)).digest() == SHA256.new(read_binary_file(decrypted_filename)).digest()
 	
 	address_gen = datamap.createDatamapGenerator(verifyingKey, None, 1)
-	for chunk in allChunksList[1:]: #first chunk is the treasure chunk and doesn't get signed when doing local simulations
+	for chunk in allChunksList[1:]: #first chunk is the protocol chunk and doesn't get signed when doing local simulations
 		data_chunk, signature = encryption.splitChunkAndSignature(chunk)
 		address = encryption.trytesToBytes(next(address_gen)[:-1])
 		encryption.verifyChunk(data_chunk + address, signature, verifyingKey.hex())
