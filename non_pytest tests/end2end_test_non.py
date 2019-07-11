@@ -85,7 +85,7 @@ def test_End_to_End():
 	for chunk in allChunksList:
 		p_tx = iota.ProposedTransaction(
 			address = iota.Address(next(address_gen)),
-			message = encryption.bytesToTrytes(chunk),
+			message = iota_utils.bytesToTrytes(chunk),
 			value = 0,
 			tag = iota.Tag(b'DISPERPYTWO'),
 		)

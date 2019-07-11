@@ -5,7 +5,6 @@ import string
 from Crypto.Random import get_random_bytes
 from Crypto.Hash import SHA256, SHA3_256, SHA3_512
 from Crypto.Cipher import AES
-from iota import TryteString
 import nacl.signing
 import nacl.encoding
 
@@ -173,17 +172,3 @@ def stripTag(chunk):
 	#tag = chunk[-16:]
 	chunkAndNonce = chunk[:-16]
 	return chunkAndNonce
-
-# Everything under this line should be moved to some iota utils module in the future ----------------------------------------------------------
-
-def bytesToTrytes(bytestring):
-	"""
-	Simple wrapper for iota.TryteString conversion method
-	"""
-	return TryteString.from_bytes(bytestring)
-
-def trytesToBytes(trytestring):
-	"""
-	Simple wrapper for iota.TryteString conversion method
-	"""
-	return TryteString.encode(trytestring)

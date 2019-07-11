@@ -1,6 +1,6 @@
 import pytest
 import os
-from oysterpy import encryption, fileprocessor, datamap
+from oysterpy import encryption, fileprocessor, datamap, iota_utils
 from Crypto.Random import get_random_bytes, random
 from Crypto.Hash import SHA256
 import numpy as np
@@ -79,7 +79,7 @@ def test_End_to_End():
 	address_gen = datamap.createDatamapGenerator(verifyingKey, None, 1)
 	for chunk in allChunksList[1:]: #first chunk is the protocol chunk and doesn't get signed when doing local simulations
 		data_chunk, signature = encryption.splitChunkAndSignature(chunk)
-		address = encryption.trytesToBytes(next(address_gen)[:-1])
+		address = iota_utils.trytesToBytes(next(address_gen)[:-1])
 		encryption.verifyChunk(data_chunk + address, signature, verifyingKey.hex())
 	assert True
 

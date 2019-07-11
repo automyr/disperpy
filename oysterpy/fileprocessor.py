@@ -1,7 +1,7 @@
 # coding=utf-8
 import os
 import math
-from oysterpy import encryption, datamap
+from oysterpy import encryption, datamap, iota_utils
 import json
 import numpy as np
 
@@ -41,7 +41,7 @@ def fileToChunks(filename, privateHandle, startingHash, password = None):
 		chunk = f.read(chunksize)
 		encrypted_chunk, nonce, tag = encryption.encryptAES(chunk, encryptionKey)
 		address_trytes = next(address_gen)[:-1] #the real address is 81 chars, but the byte conversion only works with even numbers, so we use the first 80 chars of the address to sign and check 
-		address_bytes = encryption.trytesToBytes(address_trytes)
+		address_bytes = iota_utils.trytesToBytes(address_trytes)
 		
 		if password is not None and i == 0:
 			unsigned_chunk = b"".join([encrypted_chunk, nonce, tag])
@@ -324,7 +324,7 @@ def prepareMetadataChunks(metadataTuple, privateHandle):
 	for i, metadataChunk in enumerate(metadataTuple):
 		encryptedChunk, nonce, _ = encryption.encryptAES(metadataChunk, encryptionKey)
 		preparedChunk = encryptedChunk+nonce
-		address = encryption.trytesToBytes(next(address_gen)[:-1])
+		address = iota_utils.trytesToBytes(next(address_gen)[:-1])
 		if i == 0:
 			preparedChunk = addMetadataFlags(preparedChunk, len(metadataTuple))
 		signature = encryption.signChunk(preparedChunk + address, signingKey)

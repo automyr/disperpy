@@ -6,11 +6,16 @@ def read_binary_file(path):
 		fr = f.read()
 	return fr
 
+### GLOBAL Vars ###
+
+#filename = 
+privateHandle_hex = "c87f49cc1d6dca8d50c649edaf4a60ff4388936adb776625f7b70d3519a8c8c3f97b391cc2e18f74cfac269de3484c56"
+
+### ----------- ###
+
 # Create API object
 node_url = "https://piota-node.com:443"
 api = iota.Iota(node_url)
-privateHandle_hex = "c87f49cc1d6dca8d50c649edaf4a60ff4388936adb776625f7b70d3519a8c8c3f97b391cc2e18f74cfac269de3484c56"
-privateHandle = bytes.fromhex(privateHandle_hex)
 
 # Check node connection
 try:
@@ -22,6 +27,7 @@ else:
     print("Connection to node established:", node_url)
 
 # Generate needed keys from handle
+privateHandle = bytes.fromhex(privateHandle_hex)
 _, verifyingKey = encryption.getKeypair(privateHandle)
 encryptionKey = encryption.getEncryptionKey(privateHandle)
 
