@@ -1,6 +1,6 @@
 import pytest
 import os
-from oysterpy import fileprocessor, datamap, encryption, iota_utils
+from disperpy import fileprocessor, datamap, encryption, iota_utils
 from Crypto.Random import get_random_bytes
 import nacl.exceptions
 
@@ -54,7 +54,7 @@ class TestChunkingFunctionsWithoutPassword(object):
 
 class TestChunkingFunctionsWithPassword(object):
 	_path = "testfile_5"
-	pwd = "oysterpy"
+	pwd = "disperpy"
 	initialize_file(_path)
 	privateHandle = encryption.getPrivateHandle()
 	_, genesisHash = encryption.getKeypair(privateHandle)

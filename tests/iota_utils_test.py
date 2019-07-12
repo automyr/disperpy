@@ -1,5 +1,5 @@
 import pytest
-from oysterpy import iota_utils, encryption
+from disperpy import iota_utils, encryption
 
 class TestTryteConversion(object):
 	message = encryption.getPrivateHandle() #could use anything here, so let's use a random bytestring

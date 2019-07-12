@@ -1,5 +1,5 @@
 import pytest
-from oysterpy import datamap, encryption, iota_utils
+from disperpy import datamap, encryption, iota_utils
 from Crypto.Random import get_random_bytes, random
 import hashlib
 

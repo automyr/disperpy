@@ -1,6 +1,6 @@
 import pytest
 import os
-from oysterpy import encryption, fileprocessor, datamap, iota_utils
+from disperpy import encryption, fileprocessor, datamap, iota_utils
 from Crypto.Random import get_random_bytes, random
 from Crypto.Hash import SHA256
 import numpy as np
