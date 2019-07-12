@@ -1,5 +1,5 @@
 import iota
-from oysterpy import encryption, iota_utils, datamap, fileprocessor
+from disperpy import encryption, iota_utils, datamap, fileprocessor
 
 def read_binary_file(path):
 	with open(path, "rb") as f:

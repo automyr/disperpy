@@ -1,5 +1,5 @@
 import iota, itertools
-from oysterpy import encryption, datamap, fileprocessor
+from disperpy import encryption, datamap, fileprocessor
 
 def bytesToTrytes(bytestring):
 	"""

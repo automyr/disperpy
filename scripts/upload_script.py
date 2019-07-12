@@ -1,5 +1,5 @@
 import iota
-from oysterpy import encryption, fileprocessor, datamap, iota_utils
+from disperpy import encryption, fileprocessor, datamap, iota_utils
 
 ### IMPORTANT TEST PARAMETERS
 

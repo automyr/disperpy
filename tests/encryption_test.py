@@ -1,6 +1,6 @@
 import pytest
 from Crypto.Random import get_random_bytes
-from oysterpy import encryption
+from disperpy import encryption
 
 class TestPrivateHandle(object):
 	handle = encryption.getPrivateHandle()
