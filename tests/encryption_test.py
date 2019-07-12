@@ -1,4 +1,5 @@
 import pytest
+from Crypto.Random import get_random_bytes
 from oysterpy import encryption
 
 class TestPrivateHandle(object):
@@ -21,13 +22,13 @@ class TestEd25519Keys(object):
 		assert len(self.signing_key) == 32
 
 class TestChunkEncryption(object):
-	#setup
-	uncrypted_chunk = b"THIS COULD BE ANYTHING"
+	# Setup
+	uncrypted_chunk = get_random_bytes(1013)
 	private_handle = encryption.getPrivateHandle()
 	signing_key, verifying_key = encryption.getKeypair(private_handle)
 	encryption_key = encryption.getEncryptionKey(private_handle)
 
-	#actually encrypt the chunk
+	# Actually encrypt the chunk
 	encrypted_chunk, nonce, tag = encryption.encryptAES(uncrypted_chunk, encryption_key)
 
 	def test_length_encrypted_is_equal_to_length_uncrypted(self):

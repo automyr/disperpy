@@ -9,7 +9,7 @@ def read_binary_file(path):
 ### GLOBAL Vars ###
 
 #filename = 
-privateHandle_hex = "c87f49cc1d6dca8d50c649edaf4a60ff4388936adb776625f7b70d3519a8c8c3f97b391cc2e18f74cfac269de3484c56"
+privateHandle_hex = "08647a37e610d2c99778bf5d178e92ceebf2adcd87498282e8fb80224901ccc7b8c53dafcc1fa1f3ca5edb3ba60b41af"
 
 ### ----------- ###
 
@@ -37,14 +37,11 @@ print(metadataJSON)
 
 # Download and store data chunks
 filename = list(metadataJSON.keys())[0]
-
 chunk_list = iota_utils.retrieve_file(api, metadataJSON[filename])
 
+# Decrypt and rebuild file
 decrypted_filename = "decrypted_" + filename
-
 fileprocessor.chunksToFile(chunk_list, encryptionKey, decrypted_filename)
 
-result = read_binary_file(filename) == read_binary_file(decrypted_filename)
-
-print("Is the file the same:", result)
-
+# Print confirmation message
+print("File >>>", filename, "<<< downloaded successfully and stored as >>>", decrypted_filename, "<<<")

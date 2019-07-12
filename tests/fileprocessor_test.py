@@ -35,7 +35,7 @@ class TestChunkingFunctionsWithoutPassword(object):
 		address_gen = datamap.createDatamapGenerator(verifyingKey, len(self.chunkList) + 1)
 		for chunk in self.chunkList: 
 			datachunk, signature = encryption.splitChunkAndSignature(chunk)
-			address = encryption.trytesToBytes(next(address_gen)[:-1])
+			address = iota_utils.trytesToBytes(next(address_gen)[:-1])
 			encryption.verifyChunk(datachunk + address, signature, verifyingKey.hex())
 		assert True
 	

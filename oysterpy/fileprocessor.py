@@ -5,6 +5,11 @@ from oysterpy import encryption, datamap, iota_utils
 import json
 import numpy as np
 
+def read_binary_file(path):
+	with open(path, "rb") as f:
+		fr = f.read()
+	return fr
+
 def fileToChunks(filename, privateHandle, startingHash, password = None):
 	"""Takes a filename and returns the file converted to rev2 compliant chunks, already signed.
 	
@@ -245,8 +250,8 @@ def makeMetadataChunk(filenameList, passwordFlagArray, genesisHash):
 	
 	Arguments:
 		filenameList {list} -- Each item must be a filename present in the same directory as the executed script. Each filename must be a {str} object, with this format: "path/to/file"
-		passwordFlagArray {list} -- List of boolean vales. Each index corresponds to whether the corresponding file in filename list should have a password or not.
-		genesisHash {bytes} -- Self-explanatory. Coincides with the verifying key in rev2.
+		passwordFlagArray {list} -- List of boolean values. Each index corresponds to whether the corresponding file in filename list should have a password or not.
+		genesisHash {bytes} -- Self-explanatory. Same as the verifying key in rev2.
 	
 	Returns:
 		dict -- JSON-compliant dict that contains all the metadata.
