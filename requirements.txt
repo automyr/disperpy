@@ -1,22 +1,21 @@
--i https://pypi.org/simple
-asn1crypto==0.24.0
-certifi==2019.6.16
-cffi==1.12.3
+-i https://pypi.org/simple/
+certifi==2020.12.5
+cffi==1.14.5
 chardet==3.0.4
 class-registry==2.1.2
-cryptography==2.7 ; extra == 'security'
+cryptography==3.4.7
 filters==1.3.2
-idna==2.8 ; extra == 'security'
+idna==2.8
 numpy==1.16.4
-pycparser==2.19
+pycparser==2.20
 pycryptodome==3.8.2
 pynacl==1.3.0
-pyopenssl==19.0.0 ; extra == 'security'
+pyopenssl==20.0.1
 pyota==2.0.7
 pysha3==1.0.2
-python-dateutil==2.8.0
-pytz==2019.1
-regex==2019.6.8
+python-dateutil==2.8.1
+pytz==2021.1
+regex==2021.4.4
 requests[security]==2.22.0
-six==1.12.0
+six==1.15.0
 urllib3==1.25.3
